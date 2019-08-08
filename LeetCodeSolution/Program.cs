@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections;
 
 namespace LeetCodeSolution
 {
@@ -11,7 +10,7 @@ namespace LeetCodeSolution
     {
         static void Main(string[] args)
         {
-            #region 测试两数之和
+            #region 1 测试两数之和
             //int[] nums = new int[] { 2, 7, 11, 15 };
             //int target = 26;
             //int[] result = TwoSum(nums, target);
@@ -22,16 +21,19 @@ namespace LeetCodeSolution
             //        Console.WriteLine(item);
             //    }
             //} 
-                //int[] nums = new int[] { 2, 7, 11, 15 };
-                //int target = 26;
-                //int[] result = TwoSum2(nums, target);
-                //if (result.Length > 0)
-                //{
-                //    foreach (var item in result)
-                //    {
-                //        Console.WriteLine(item);
-                //    }
-                //}
+            //int[] nums = new int[] { 2, 7, 11, 15 };
+            //int target = 26;
+            //int[] result = TwoSum2(nums, target);
+            //if (result.Length > 0)
+            //{
+            //    foreach (var item in result)
+            //    {
+            //        Console.WriteLine(item);
+            //    }
+            //}
+            #endregion
+            #region 2测试单链表两数相加
+            //ListNode result = AddTwoNumbers(new ListNode(2,4,3), new ListNode[5, 6, 4]);
             #endregion
             Console.ReadLine();
         }
@@ -44,7 +46,7 @@ namespace LeetCodeSolution
         //所以返回[0, 1]
         //思路一:遍历两边数组，第一遍用target-nums[i]，
         //第二遍找nums数组中是否存在target-nums[i]这个数字，找到就返回两个数字组成的数组
-        //这个很耗时间
+        //这个很耗时间,复杂度O(n^2)
         public static int[]TwoSum(int []nums,int target)
         {
             int[] result=new int[2];
@@ -63,7 +65,7 @@ namespace LeetCodeSolution
             }
             return result;
         }
-        //思路二:哈希表存储查找
+        //思路二:哈希表存储查找,复杂度O(n+1)
         public static int[] TwoSum2(int[]nums,int target)
         {
             int[] result = new int[2];
@@ -90,6 +92,54 @@ namespace LeetCodeSolution
             return result;
         }
 
+        #endregion
+        //这道题不会
+        #region 2两数相加
+        //给出两个 非空 的链表用来表示两个非负的整数。其中，它们各自的位数是按照 逆序的方式存储的，并且它们的每个节点只能存储 一位数字。
+        //如果，我们将这两个数相加起来，则会返回一个新的链表来表示它们的和。
+        //您可以假设除了数字 0 之外，这两个数都不会以 0 开头
+        //示例
+        //输入：(2 -> 4 -> 3) + (5 -> 6 -> 4)
+        //输出：7 -> 0 -> 8
+        //原因：342 + 465 = 807
+        //定义单链表
+        public class ListNode
+        {
+            public int val { get; set; }
+            public ListNode next { get; set; }
+            public ListNode(int x)
+            {
+                val = x;
+            }
+        }
+        public static ListNode AddTwoNumbers(ListNode l1,ListNode l2)
+        {
+            ListNode dummyHead = new ListNode(0);//新建头节点
+            ListNode p = l1, q = l2, curr = dummyHead;
+            int carry = 0;//进位用
+            while (p!=null||q!=null)
+            {
+                int x = (p != null) ? p.val : 0;
+                int y = (q != null) ? q.val : 0;
+                int sum = carry + x + y;
+                carry = sum / 10;
+                curr.next = new ListNode(sum % 10);
+                curr = curr.next;
+                if (p!=null)
+                {
+                    p = p.next;
+                }
+                if (q!=null)
+                {
+                    q = q.next;
+                }
+            }
+            if (carry>0)
+            {
+                curr.next = new ListNode(carry);
+            }
+            return dummyHead.next;
+        }
         #endregion
     }
 }
