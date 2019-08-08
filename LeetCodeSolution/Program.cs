@@ -10,6 +10,7 @@ namespace LeetCodeSolution
     {
         static void Main(string[] args)
         {
+
         }
     }
 }
