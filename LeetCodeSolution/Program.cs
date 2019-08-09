@@ -35,6 +35,12 @@ namespace LeetCodeSolution
             #region 2测试单链表两数相加
             //ListNode result = AddTwoNumbers(new ListNode(2,4,3), new ListNode[5, 6, 4]);
             #endregion
+            #region 3测试无重复字符的最长子串
+            string s = "abcabcbb";
+            //string s = "pwwkew";
+            int num = LengthOfLongestSubstring(s);
+            Console.WriteLine($"最大子串长度是: {num}");
+            #endregion
             Console.ReadLine();
         }
         #region 1 两数之和
@@ -146,7 +152,30 @@ namespace LeetCodeSolution
         //给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度
         //示例:
         //abcabcbb 输出3 最长abc          bbbbbbb输出1     pwwkew 输出3最长wke
-
+        //思路一:使用hashset循环添加字符，失败就清空，记录当前字符上一次出现的位置，重新开始循环，特别耗时间
+        public static int LengthOfLongestSubstring(string s)
+        {
+            char[] arr = s.ToCharArray();
+            HashSet<string> set = new HashSet<string>();
+            int num = 0;
+            int total = 0;
+            for (int i = 0; i < arr.Length; i++)
+            {
+                total++;
+                bool success = set.Add(arr[i].ToString());//crux: if it exists that can be  added  correctly.else is false
+                if (!success)
+                {
+                    set.Clear();
+                    i = s.LastIndexOf(arr[i], i - 1);//crux2:  LastIndexOf(char,index) 从索引0开始到指定的数值位置范围内查找最后一个匹配的的字符串的位置
+                }
+                if (num<set.Count)
+                {
+                    num = set.Count;
+                }
+            }
+            Console.WriteLine($"总循环次数:{total}");
+            return num;
+        }
         #endregion
     }
 }
