@@ -31,19 +31,23 @@ namespace TestLinkedList
             {
                 removedObject = list.RemoveFromFront();
                 Console.WriteLine(removedObject + " removed");
+                Console.WriteLine($"Remove form front");
                 list.Display();
 
                 removedObject = list.RemoveFromFront();
                 Console.WriteLine(removedObject + " removed");
+                Console.WriteLine($"Remove form front");
                 list.Display();
 
 
                 removedObject = list.RemoveFromBack();
                 Console.WriteLine(removedObject + " removed");
+                Console.WriteLine($"Remove form back");
                 list.Display();
 
                 removedObject = list.RemoveFromBack();
                 Console.WriteLine(removedObject + " removed");
+                Console.WriteLine($"Remove form back");
                 list.Display();
             }
             catch (EmptyListException emptyListException)
