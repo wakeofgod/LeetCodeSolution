@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Collections;
 
 namespace LeetCodeSolution
 {
@@ -36,10 +38,19 @@ namespace LeetCodeSolution
             //ListNode result = AddTwoNumbers(new ListNode(2,4,3), new ListNode[5, 6, 4]);
             #endregion
             #region 3测试无重复字符的最长子串
-            string s = "abcabcbb";
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            //string s = "abcabcbb";
             //string s = "pwwkew";
+            string s = "dyynzbbdlthfdzopvvudpfymhipslenqemfenhjbcrggsxxnsrtjxrveckypqofxckbrtkswdbex";
             int num = LengthOfLongestSubstring(s);
             Console.WriteLine($"最大子串长度是: {num}");
+            Console.WriteLine($"方法一总用时{watch.Elapsed}");
+            //方法二循环次数比方法一多，但是速度快10倍？？？
+            watch = Stopwatch.StartNew();
+            num = LengthOfLongestSubstring2(s);
+            Console.WriteLine($"最大子串长度是: {num}");
+            Console.WriteLine($"方法二总用时{watch.Elapsed}");
             #endregion
             Console.ReadLine();
         }
@@ -173,9 +184,60 @@ namespace LeetCodeSolution
                     num = set.Count;
                 }
             }
-            Console.WriteLine($"总循环次数:{total}");
+            Console.WriteLine($"方法一总循环次数:{total}");
             return num;
         }
+        //暴力解法 时间复杂度：O(n^3)
+        public static int LengthOfLongestSubstring2(string s)
+        {
+            int n = s.Length;
+            if (n == 0)
+                return 0;
+            int ans = 0;
+            int total = 0;
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = i+1; j <=n; j++)
+                {
+                    total++;
+                    if (allUniqu(s,i,j))
+                    {
+                        ans = Math.Max(ans, j - i);
+                    }
+                }
+            }
+            Console.WriteLine($"方法二总循环次数:{total}");
+            return ans;
+        }
+        public static  bool allUniqu(string s,int start,int end)
+        {
+            HashSet<string> set = new HashSet<string>();
+            for (int i = start; i < end; i++)
+            {
+                string ch = s.Substring(i, 1);
+                if (set.Contains(ch))
+                {
+                    return false;
+                }
+                set.Add(ch);
+            }
+            return true;
+        }
+
+        //public static int LengthOfLongestSubstring3(string s)
+        //{
+
+        //}
+        #endregion
+
+        #region 4寻找两个有序数组的中位数
+        //给定两个大小为 m 和 n 的有序数组 nums1 和 nums2。
+        //请你找出这两个有序数组的中位数，并且要求算法的时间复杂度为 O(log(m + n))。
+        //你可以假设 nums1和 nums2不会同时为空
+        //示例 nums1 = [1, 3]，nums2 = [2]，则中位数是 2.0
+        //nums1 = [1, 2], nums2 = [3, 4], 则中位数是(2 + 3)/2 = 2.5
+
+
         #endregion
     }
 }
