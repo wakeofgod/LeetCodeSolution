@@ -66,9 +66,24 @@ namespace TestLinkedList
                 #endregion
                 #region 测试单链表在时间复杂度为O(1)删除链表结点
                 //list.DeleteNode(list.firstNode,list.firstNode.Next.Next);
-                Console.WriteLine("测试删除指定节点:");
-                list.DeleteNode(list.firstNode, list.Find(anInteger));
-                list.Display();
+                //Console.WriteLine("测试删除指定节点:");
+                //list.DeleteNode(list.firstNode, list.Find(anInteger));
+                //list.Display();
+                #endregion
+                #region 10.反转链表
+                //LinkedListNode reverseNode = list.ReverseList(list.firstNode);
+                //while (reverseNode != null)
+                //{
+                //    Console.WriteLine($"{reverseNode.Data}");
+                //    reverseNode = reverseNode.Next;
+                //}
+                LinkedListNode reverseNode = list.ReverseList2(list.firstNode);
+                Console.WriteLine($"反转后第一个节点是:{reverseNode.Data}");
+                while (reverseNode != null)
+                {
+                    Console.WriteLine($"{reverseNode.Data}");
+                    reverseNode = reverseNode.Next;
+                }
                 #endregion
             }
             catch (EmptyListException emptyListException)
@@ -397,6 +412,9 @@ namespace TestLinkedList
         #endregion
         #region 7.两个链表的第一个公共节点
         //问题描述:输入两个单链表，找出他们的第一个公共结点
+        //思路：由于两个链表的长度可能是不一致的，所以首先比较两个链表的长度m，n，
+        //然后用两个指针分别指向两个链表的头节点，让较长的链表的指针先走|m-n|个长度，
+        //如果他们下面的节点是一样的，就说明出现了第一个公共节点
         public LinkedListNode FindFirstCommonNode(LinkedListNode pHead1,LinkedListNode pHead2)
         {
             if (pHead1==null ||pHead2==null)
@@ -419,6 +437,7 @@ namespace TestLinkedList
                 count2++;
             }
             int flag = count1 - count2;
+            //长的链表先走n步
             if (flag>0)
             {
                 while (flag>0)
@@ -426,7 +445,65 @@ namespace TestLinkedList
                     pHead1 = pHead1.Next;
                     flag--;
                 }
+                while (pHead1!=pHead2)
+                {
+                    pHead1 = pHead1.Next;
+                    pHead2 = pHead2.Next;
+                }
+                return pHead1;
             }
+            if (flag<=0)
+            {
+                while (flag < 0)
+                {
+                    pHead2 = pHead2.Next;
+                    flag++;
+                }
+                while (pHead1!=pHead2)
+                {
+                    pHead1 = pHead1.Next;
+                    pHead2 = pHead2.Next;
+                }
+                return pHead1;
+            }
+            return null;
+        }
+        #endregion
+        #region 8.合并两个排序的链表
+        //问题描述:输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则
+        #endregion
+        #region 9.复杂的链表复制
+        //问题描述:
+
+        #endregion
+        #region 10.反转链表
+        //问题描述:定义一个函数，输入一个链表的头结点，反转该链表并输出反转后链表的头结点
+        //使用递归
+        public LinkedListNode ReverseList(LinkedListNode firstNode)
+        {
+            if (firstNode==null||firstNode.Next==null)
+            {
+                return firstNode;
+            }
+            LinkedListNode next = firstNode.Next;
+            firstNode.Next = null;
+            LinkedListNode newHead = ReverseList(next);
+            next.Next = firstNode;
+            return newHead;
+        }
+        //不使用递归
+        public LinkedListNode ReverseList2(LinkedListNode firstNode)
+        {
+            LinkedListNode newList = new LinkedListNode(-1);
+            while (firstNode != null)
+            {
+                //新节点指向下一个
+                LinkedListNode next = firstNode.Next;
+                firstNode.Next = newList.Next;
+                newList.Next = firstNode;
+                firstNode = next;
+            }
+            return newList.Next;
         }
         #endregion
     }
