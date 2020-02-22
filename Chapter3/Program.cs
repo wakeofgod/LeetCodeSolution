@@ -43,6 +43,7 @@ namespace Chapter3
             }
             numElements = 0;
         }
+        #region 冒泡排序
         //先找最大的
         public void BubbleSort()
         {
@@ -89,5 +90,6 @@ namespace Chapter3
             }
             Console.WriteLine($"共计比较次数:{total}");
         }
+        #endregion
     }
 }
