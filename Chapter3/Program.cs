@@ -50,6 +50,16 @@ namespace Chapter3
             sortTime.StopTime();
             Console.WriteLine();
             Console.WriteLine($"Time for Insertion sort :{sortTime.Result().TotalMilliseconds}");
+            theArray.Clear();
+            for (int i = 0; i < numItems; i++)
+            {
+                theArray.Insert(rnd.Next(0, 1000));
+            }
+            sortTime.StartTime();
+            theArray.InsertionSort2();
+            sortTime.StopTime();
+            Console.WriteLine();
+            Console.WriteLine($"Time for Insertion sort :{sortTime.Result().TotalMilliseconds}");
             #endregion
             Console.ReadLine();
         }
@@ -173,6 +183,30 @@ namespace Chapter3
                 arr[inner] = temp;
                 //this.DisPlayElements();
             }
+        }
+        //冒泡排序是从一端开始，比较大小后存到另一端。每次都是从前开始，把最大或最小的结果放到最后。
+        //插入排序始终是从前面开始，把下一个元素存到前面，不用比较最大最小的结果
+        public void InsertionSort2()
+        {
+            int temp, total = 0;
+            for (int outer = 0; outer <=upper; outer++)
+            {
+                for (int inner = outer; inner >0; inner--)
+                {
+                    if (arr[inner]>arr[inner-1])
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        temp = arr[inner];
+                        arr[inner] = arr[inner - 1];
+                        arr[inner - 1] = temp;
+                        total++;
+                    }
+                }
+            }
+            Console.WriteLine($"第二种插入排序的交换次数是{total}");
         }
 
         #endregion
