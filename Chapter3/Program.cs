@@ -13,11 +13,12 @@ namespace Chapter3
         {
             Timing sortTime = new Timing();
             Random rnd = new Random(100);
-            int numItems = 1000;
+            int numItems = 10000;
             CAarry theArray = new CAarry(numItems);
+            //#region 选择排序时间
             for (int i = 0; i < numItems; i++)
             {
-                theArray.Insert(rnd.Next(0,1000));
+                theArray.Insert(rnd.Next(0, 1000));
             }
             theArray.DisPlayElements();
             sortTime.StartTime();
@@ -26,6 +27,8 @@ namespace Chapter3
             Console.WriteLine();
             Console.WriteLine($"Time for Selection sort :{sortTime.Result().TotalMilliseconds}");
             theArray.Clear();
+            //#endregion
+            #region 冒泡排序时间
             for (int i = 0; i < numItems; i++)
             {
                 theArray.Insert(rnd.Next(0, 1000));
@@ -36,6 +39,8 @@ namespace Chapter3
             Console.WriteLine();
             Console.WriteLine($"Time for Bubble sort :{sortTime.Result().TotalMilliseconds}");
             theArray.Clear();
+            #endregion
+            #region 插入排序时间
             for (int i = 0; i < numItems; i++)
             {
                 theArray.Insert(rnd.Next(0, 1000));
@@ -45,6 +50,7 @@ namespace Chapter3
             sortTime.StopTime();
             Console.WriteLine();
             Console.WriteLine($"Time for Insertion sort :{sortTime.Result().TotalMilliseconds}");
+            #endregion
             Console.ReadLine();
         }
     }
@@ -97,11 +103,11 @@ namespace Chapter3
                         total++;
                     }
                 }
-                Console.WriteLine();
+                //Console.WriteLine();
                 //Console.WriteLine($"显示第{upper-outer+1}次排序");
                 //this.DisPlayElements();
             }
-            Console.WriteLine($"共计比较次数:{total}");
+            Console.WriteLine($"冒泡排序共计交换次数:{total}");
         }
         //先找最小的
         public void BubbleSort2()
@@ -130,7 +136,7 @@ namespace Chapter3
         #region 选择排序法
         public void SelectionSort()
         {
-            int min, temp;
+            int min, temp,total=0;
             for (int outer = 0; outer <=upper; outer++)
             {
                 min = outer;
@@ -139,6 +145,7 @@ namespace Chapter3
                     if (arr[inner]<arr[min])
                     {
                         min = inner;
+                        total++;
                     }
                     temp = arr[outer];
                     arr[outer] = arr[min];
@@ -146,6 +153,7 @@ namespace Chapter3
                     //this.DisPlayElements();
                 }
             }
+            Console.WriteLine($"选择排序共计交换次数:{total}");
         }
 
         #endregion
@@ -172,23 +180,19 @@ namespace Chapter3
     #region 时间测试类
     public class Timing
     {
-        TimeSpan startingTime;
         TimeSpan duration;
         public Timing()
         {
-            startingTime = new TimeSpan(0);
             duration = new TimeSpan(0);
         }
         public void StopTime()
         {
-            duration = Process.GetCurrentProcess().Threads[0].
-                UserProcessorTime.Subtract(startingTime);
+            duration = Process.GetCurrentProcess().TotalProcessorTime;
         }
         public void StartTime()
         {
             GC.Collect();
             GC.WaitForPendingFinalizers();
-            startingTime = Process.GetCurrentProcess().Threads[0].UserProcessorTime;
         }
         public TimeSpan Result()
         {
