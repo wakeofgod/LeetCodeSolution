@@ -19,6 +19,7 @@ namespace Chapter4
             CAarry mynums2 = new CAarry(arrayLength);
             //CAarry mynums3 = new CAarry(arrayLength);
             int[] mynums3 = new int[arrayLength];
+            int position = 0;
             for (int i = 0; i < arrayLength-1; i++)
             {
                 int temp = random.Next(100);
@@ -34,18 +35,24 @@ namespace Chapter4
             {
                 mynums3[i] = mynums.arr[i];
             }
+            #region 二叉查找
             sortTime.StartTime();
-            int position = mynums.binSearch(77);
+            position = mynums.binSearch(77);
             sortTime.StopTime();
             Console.WriteLine($"二叉查找总共用时:{sortTime.Result().TotalMilliseconds}");
+            #endregion
+            #region 递归二叉查找
             sortTime.StartTime();
             position = mynums2.RbinSearch(77, 0, arrayLength);
             sortTime.StopTime();
             Console.WriteLine($"递归二叉查找总共用时:{sortTime.Result().TotalMilliseconds}");
+            #endregion
+            #region 数组内置二叉查找
             sortTime.StartTime();
             position = Array.BinarySearch(mynums3, 77);
             sortTime.StopTime();
             Console.WriteLine($"数组内置二叉查找总共用时:{sortTime.Result().TotalMilliseconds}");
+            #endregion
             if (position>-1)
             {
                 Console.WriteLine("found item");
