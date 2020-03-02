@@ -83,21 +83,59 @@ namespace Chapter5
             //Console.WriteLine($" Base {baseNum} ");
             #endregion
             #region 测试Queue 舞伴
-            Queue males = new Queue();
-            Queue females = new Queue();
-            formLines(males, females);
-            startDancing(males, females);
-            if (males.Count > 0 || females.Count > 0)
+            //Queue males = new Queue();
+            //Queue females = new Queue();
+            //formLines(males, females);
+            //startDancing(males, females);
+            //if (males.Count > 0 || females.Count > 0)
+            //{
+            //    headOfLine(males, females);
+            //}
+            //newDancers(males, females);
+            //if (males.Count > 0 || females.Count > 0)
+            //{
+            //    headOfLine(males, females);
+            //}
+            //newDancers(males, females);
+            //Console.WriteLine("press enter");
+            #endregion
+            #region 队列排序数据
+            //Queue[] numQueue = new Queue[10];
+            //int[] nums = new int[] { 91, 46, 85, 15, 92, 35, 31, 22 };
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    numQueue[i] = new Queue();
+            //}
+            ////第一次排序，个位数
+            //RSort(numQueue, nums, DigitType.ones);
+            //BuildArray(numQueue, nums);
+            //Console.WriteLine();
+            //Console.WriteLine($"First pass results: ");
+            //DisplayArray(nums);
+            ////第二次排序，十位数
+            //RSort(numQueue, nums, DigitType.tens);
+            //BuildArray(numQueue, nums);
+            //Console.WriteLine();
+            //Console.WriteLine($"Second pass results: ");
+            //DisplayArray(nums);
+            //Console.WriteLine($"Press enter to quit");
+            #endregion
+            #region 优先队列
+            PQueue erwait = new PQueue();
+            pqItem[] erPatient = new pqItem[3];
+            pqItem nextPatient;
+            erPatient[0].name = "Joe Smith";
+            erPatient[0].priority = 1;
+            erPatient[1].name = "Mary Brown";
+            erPatient[1].priority = 0;
+            erPatient[2].name = "Sam Jones";
+            erPatient[2].priority = 3;
+            for (int i = 0; i < erPatient.Length; i++)
             {
-                headOfLine(males, females);
+                erwait.Enqueue(erPatient[i]);
             }
-            newDancers(males, females);
-            if (males.Count > 0 || females.Count > 0)
-            {
-                headOfLine(males, females);
-            }
-            newDancers(males, females);
-            Console.WriteLine("press enter");
+            nextPatient =(pqItem) erwait.Dequeue();
+            Console.WriteLine($"{nextPatient.name}");
             #endregion
             Console.Read();
         }
@@ -259,6 +297,42 @@ namespace Chapter5
             }
         }
         #endregion
+        #region 用队列排序 数据
+        public static void DisplayArray(int[] n)
+        {
+            //GetUpperBound获取数组指定维度最后一个元素的索引
+            for (int i = 0; i < n.Length; i++)
+            {
+                Console.Write($"{n[i]}  ");
+            }
+        }
+        public static void RSort(Queue[] que,int[]n,DigitType digit)
+        {
+            int snum;
+            for (int i = 0; i < n.Length; i++)
+            {
+                //int temp = n.GetUpperBound(0);
+                //Console.WriteLine(temp);
+                if (digit == DigitType.ones)
+                    snum = n[i] % 10;
+                else
+                    snum = n[i] / 10;
+                que[snum].Enqueue(n[i]);
+            }
+        }
+        public static void BuildArray(Queue[] que, int[] n)
+        {
+            int y = 0;
+            for (int x = 0; x <=9; x++)
+            {
+                while (que[x].Count > 0)
+                {
+                    n[y] = Convert.ToInt32(que[x].Dequeue().ToString());
+                    y++;
+                }
+            }
+        }
+        #endregion
     }
     public class CStack
     {
@@ -340,6 +414,47 @@ namespace Chapter5
         public override string ToString()
         {
             return name;
+        }
+    }
+    #endregion
+    public enum DigitType
+    {
+        ones=1,
+        tens=10
+    }
+    #region 优先队列
+    public struct pqItem
+    {
+        public int priority;
+        public string name;
+    }
+    public class PQueue : Queue
+    {
+        public PQueue()
+        {
+
+        }
+        public override object Dequeue()
+        {
+            object[] items;
+            int min;
+            items = this.ToArray();
+            min = ((pqItem)items[0]).priority;
+            for (int x = 0; x < items.Length; x++)
+            {
+                if (((pqItem)items[x]).priority<min)
+                {
+                    min = ((pqItem)items[x]).priority;
+                }
+            }
+            this.Clear();
+            int x2;
+            for ( x2 = 0; x2 < items.Length; x2++)
+            {
+                if (((pqItem)items[x2]).priority == min && ((pqItem)items[x2]).name != "")
+                    this.Enqueue(items[x2]);
+            }
+            return base.Dequeue();
         }
     }
     #endregion
