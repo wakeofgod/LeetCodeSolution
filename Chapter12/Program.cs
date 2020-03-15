@@ -20,9 +20,14 @@ namespace Chapter12
             nums.Insert(99);
             nums.Insert(22);
             Console.WriteLine($"Inorder traversal: ");
-            nums.InOrder(nums.root);
+            //nums.InOrder(nums.root);
+            //nums.InOrderNoRecursion(nums.root);
             //nums.PreOrder(nums.root);
-            //nums.PostOrder(nums.root);
+            //nums.PreOrderNoRecursion(nums.root);
+            nums.PostOrder(nums.root);
+            //nums.PostOrderNocursion(nums.root);
+            //nums.PostOrderNocursion2(nums.root);
+            //nums.LevelOrder(nums.root);
             #endregion
             Console.ReadLine();
         }
@@ -88,6 +93,29 @@ namespace Chapter12
                 InOrder(theRoot.right);
             }
         }
+        //非递归中序遍历
+        public void InOrderNoRecursion(Node theRoot)
+        {
+            if (theRoot == null)
+                return;
+            System.Collections.Generic.Stack<Node> stack = new Stack<Node>();
+            Node node = theRoot;
+            Console.WriteLine("开始非递归中序遍历:");
+            while (node != null || stack.Any())
+            {
+                if (node != null)
+                {
+                    stack.Push(node);
+                    node = node.left;
+                }
+                else
+                {
+                    var item = stack.Pop();
+                    Console.Write(item.Data);
+                    node = item.right;
+                }
+            }
+        }
         //先序遍历
         public void PreOrder(Node theRoot)
         {
@@ -96,6 +124,29 @@ namespace Chapter12
                 theRoot.DisplayNode();
                 PreOrder(theRoot.left);
                 PreOrder(theRoot.right);
+            }
+        }
+        //先序遍历非递归
+        public void PreOrderNoRecursion(Node theRoot)
+        {
+            if (theRoot == null)
+                return;
+            System.Collections.Generic.Stack<Node> stack = new Stack<Node>();
+            Node node = theRoot;
+            Console.WriteLine("开始非递归先序遍历:");
+            while(node!=null || stack.Any())
+            {
+                if (node != null)
+                {
+                    stack.Push(node);
+                    Console.Write($"{ node.Data} ");
+                    node = node.left;
+                }
+                else
+                {
+                    var item = stack.Pop();
+                    node = item.right;
+                }
             }
         }
         //后序遍历
@@ -108,7 +159,115 @@ namespace Chapter12
                 theRoot.DisplayNode();
             }
         }
+        //非递归后续遍历,比其他两种复杂一些
+        public void PostOrderNocursion(Node theRoot)
+        {
+            if (theRoot == null)
+                return;
+            System.Collections.Generic.Stack<Node> stack = new Stack<Node>();
+            Node node = theRoot;
+            Node pre = null;
+            stack.Push(node);
+            Console.WriteLine("开始非递归后续遍历:");
+            while (stack.Any())
+            {
+                node = stack.Peek();
+                if( (node.left==null && node.right == null) || (pre!= null && (pre == node.left || pre == node.right)))
+                {
+                    Console.Write($"{node.Data} ");
+                    pre = node;
+                    stack.Pop();
+                }
+                else
+                {
+                    if (node.right != null)
+                    {
+                        stack.Push(node.right);
+                    }
+                    if (node.left != null)
+                    {
+                        stack.Push(node.left);
+                    }
+                }
+            }
+        }
 
+        public void PostOrderNocursion2(Node theRoot)
+        {
+            HashSet<Node> visited = new HashSet<Node>();
+            Stack<Node> stack = new Stack<Node>();
+            Node node = theRoot;
+            Console.WriteLine("第二种非递归后续遍历:");
+            while(node!=null || stack.Any())
+            {
+                if (node != null)
+                {
+                    stack.Push(node);
+                    node = node.left;
+                }
+                else
+                {
+                    var item = stack.Peek();
+                    if(item.right!=null && !visited.Contains(item.right))
+                    {
+                        node = item.right;
+                    }
+                    else
+                    {
+                        Console.Write($"{ item.Data} ");
+                        visited.Add(item);
+                        stack.Pop();
+                    }
+                }
+            }
+        }
+        //层序遍历
+        //按照层次从左到右一层层的遍历
+        public void LevelOrder(Node theRoot)
+        {
+            if (theRoot == null)
+                return;
+            Queue<Node> queue = new Queue<Node>();
+            queue.Enqueue(theRoot);
+            Console.WriteLine("开始层序遍历");
+            while (queue.Any())
+            {
+                var item = queue.Dequeue();
+                Console.Write($"{item.Data} ");
+                if (item.left != null)
+                {
+                    queue.Enqueue(item.left);
+                }
+                if (item.right != null)
+                {
+                    queue.Enqueue(item.right);
+                }
+            }
+        }
+
+        #region Z-型层序遍历 待完成
+        //查找树的层数
+        public int GetDepth(Node tree,Node node)
+        {
+            if (tree == null)
+                return 0;
+
+            if (tree == node)
+                return 1;
+
+            if (tree.left == node || tree.right == node)
+                return 2;
+
+            int lDepth = GetDepth(tree.left, node);
+            lDepth = lDepth == 0 ? 0 : lDepth + 1;
+
+            int rDepth = GetDepth(tree.right, node);
+            rDepth = rDepth == 0 ? 0 : rDepth + 1;
+
+            return lDepth >= rDepth ? lDepth : rDepth;
+        }
+
+        #endregion
         //查找最小值
         public int FindMin()
         {
