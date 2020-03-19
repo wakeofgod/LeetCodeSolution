@@ -11,7 +11,7 @@ namespace Chapter14
     {
         static void Main(string[] args)
         {
-            #region 
+            #region 希尔 归并 快速排序
             const int SIZE = 19;
             CAarry theArray = new CAarry(SIZE);
             Random random = new Random();
@@ -24,10 +24,128 @@ namespace Chapter14
             Console.WriteLine();
             //theArray.ShellSort();
             //theArray.DisPlayElements();
-            Console.WriteLine("开始归并排序:");
-            theArray.MergeSort();
+            //Console.WriteLine("开始归并排序:");
+            //theArray.MergeSort();
+            theArray.QSort();
+            #endregion
+
+            #region 堆排序
+            //const int SIZE = 9;
+            //Heap aHeap = new Heap(SIZE);
+            //Random random = new Random();
+            //for (int i = 0; i < SIZE; i++)
+            //{
+            //    int rn = random.Next(1, 100);
+            //    aHeap.Insert(rn);
+            //}
+            //Console.WriteLine("Random:");
+            //aHeap.ShowArray();
+            //Console.WriteLine();
+            //Console.WriteLine("Heap: ");
+            //for (int i =(int) SIZE/2-1; i >=0; i--)
+            //{
+            //    aHeap.ShiftDown(i);
+            //}
+            //aHeap.ShowArray();
+            //for (int i = SIZE-1; i >=0; i--)
+            //{
+            //    Node bigNode = aHeap.Remove();
+            //    aHeap.InsertAt(i, bigNode);
+            //}
+            //Console.WriteLine();
+            //Console.WriteLine("Sorted: ");
+            //aHeap.ShowArray();
             #endregion
             Console.ReadLine();
+        }
+    }
+    public class Node
+    {
+        public int data;
+        public Node(int key)
+        {
+            data = key;
+        }
+    }
+    public class Heap
+    {
+        Node[] heapArray = null;
+        public int maxSize = 0;
+        public int currSize = 0;
+        public Heap(int maxSize)
+        {
+            this.maxSize = maxSize;
+            heapArray = new Node[maxSize];
+        }
+        public bool Insert(int key)
+        {
+            if (currSize == maxSize)
+                return false;
+            heapArray[currSize] = new Node(key);
+            currSize++;
+            return true;
+        }
+        public bool InsertAt(int pos,Node nd)
+        {
+            heapArray[pos] = nd;
+            return true;
+        }
+        public void ShiftUp(int index)
+        {
+            int parent = (index - 1) / 2;
+            Node bottom = heapArray[index];
+            while(index>0 && heapArray[parent].data < bottom.data)
+            {
+                heapArray[index] = heapArray[parent];
+                index = parent;
+                parent = (parent - 1) / 2;
+            }
+            heapArray[index] = bottom;
+        }
+
+        public void ShiftDown(int index)
+        {
+            int largeChild;
+            Node top = heapArray[index];
+            while (index < (int)(currSize / 2))
+            {
+                int leftChild = 2 * index + 1;
+                int rightChild = leftChild + 1;
+                if(rightChild<currSize && heapArray[leftChild].data < heapArray[rightChild].data)
+                {
+                    largeChild = rightChild;
+                }
+                else
+                {
+                    largeChild = leftChild;
+                }
+                if (top.data >= heapArray[largeChild].data)
+                {
+                    break;
+                }
+                heapArray[index] = heapArray[largeChild];
+                index = largeChild;
+            }
+            heapArray[index] = top;
+        }
+        public void ShowArray()
+        {
+            for (int i = 0; i < maxSize; i++)
+            {
+                if (heapArray[i] != null)
+                {
+                    Console.Write($"{heapArray[i].data} ");
+                }
+            }
+        }
+
+        public Node Remove()
+        {
+            Node root = heapArray[0];
+            currSize--;
+            heapArray[0] = heapArray[currSize];
+            ShiftDown(0);
+            return root;
         }
     }
     public class CAarry
@@ -228,6 +346,77 @@ namespace Chapter14
             }
             Console.WriteLine();
             this.DisPlayElements();
+        }
+        #endregion
+        #region 快速排序
+        public void QSort()
+        {
+            RecQSort(0, numElements - 1);
+        }
+        public void RecQSort(int first,int last)
+        {
+            if (first >= last)
+                return;
+            else
+            {
+                int part = this.Partition(first, last);
+                RecQSort(first, part - 1);
+                RecQSort(part + 1, last);
+            }
+        }
+        public int Partition(int first,int last)
+        {
+            int pivotVal = arr[first];
+            int theFirst = first;
+            bool okSide;
+            first++;
+            do
+            {
+                okSide = true;
+                while (okSide)
+                {
+                    if (arr[first] > pivotVal)
+                    {
+                        okSide = false;
+                    }
+                    else
+                    {
+                        first++;
+                        okSide = (first <= last);
+                    }
+                }
+                okSide = true;
+                while (okSide)
+                {
+                    if (arr[last] <= pivotVal)
+                    {
+                        okSide = false;
+                    }
+                    else
+                    {
+                        last--;
+                        okSide = (first <= last);
+                    }
+                }
+                if (first < last)
+                {
+                    Swap(first, last);
+                    Console.WriteLine();
+                    this.DisPlayElements();
+                    first++;
+                    last--;
+                }
+            } while (first <= last);
+            Console.WriteLine();
+            Swap(theFirst, last);
+            this.DisPlayElements();
+            return last;
+        }
+        public void Swap(int item1,int item2)
+        {
+            int temp = arr[item1];
+            arr[item1] = arr[item2];
+            arr[item2] = temp;
         }
         #endregion
         #region 堆排序
