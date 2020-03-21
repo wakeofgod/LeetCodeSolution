@@ -26,6 +26,7 @@ namespace Chapter14
             //theArray.DisPlayElements();
             //Console.WriteLine("开始归并排序:");
             //theArray.MergeSort();
+            Console.WriteLine("开始快速排序:");
             theArray.QSort();
             #endregion
 
@@ -360,12 +361,14 @@ namespace Chapter14
             else
             {
                 int part = this.Partition(first, last);
+               // Console.WriteLine($"part is {part} ");
                 RecQSort(first, part - 1);
                 RecQSort(part + 1, last);
             }
         }
         public int Partition(int first,int last)
         {
+            //Console.WriteLine($"当前first{first} last{last} ");
             int pivotVal = arr[first];
             int theFirst = first;
             bool okSide;
@@ -398,8 +401,10 @@ namespace Chapter14
                         okSide = (first <= last);
                     }
                 }
+                //Console.WriteLine($"分割点数据是:{pivotVal}");
                 if (first < last)
                 {
+                   // Console.WriteLine($"交换时first:{first} 数据:{arr[first]} last:{last} 数据:{arr[last]}");
                     Swap(first, last);
                     Console.WriteLine();
                     this.DisPlayElements();
@@ -408,6 +413,8 @@ namespace Chapter14
                 }
             } while (first <= last);
             Console.WriteLine();
+            //Console.WriteLine($"first大于last:first{first} last:{last}");
+            //Console.WriteLine($"交换分割点和末位theFirst:{theFirst} 数据:{arr[theFirst]} last:{last} 数据:{arr[last]}");
             Swap(theFirst, last);
             this.DisPlayElements();
             return last;

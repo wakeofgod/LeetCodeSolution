@@ -13,14 +13,14 @@ namespace Chapter3
         {
             Timing sortTime = new Timing();
             Random rnd = new Random(100);
-            int numItems = 10000;
+            int numItems = 100000;
             CAarry theArray = new CAarry(numItems);
             //#region 选择排序时间
             for (int i = 0; i < numItems; i++)
             {
                 theArray.Insert(rnd.Next(0, 1000));
             }
-            theArray.DisPlayElements();
+            //theArray.DisPlayElements();
             sortTime.StartTime();
             theArray.SelectionSort();
             sortTime.StopTime();
@@ -60,6 +60,20 @@ namespace Chapter3
             sortTime.StopTime();
             Console.WriteLine();
             Console.WriteLine($"Time for Insertion sort :{sortTime.Result().TotalMilliseconds}");
+            #endregion
+            #region 快速排序时间
+            theArray.Clear();
+            for (int i = 0; i < numItems; i++)
+            {
+                theArray.Insert(rnd.Next(0, 1000));
+            }
+            //theArray.DisPlayElements();
+            sortTime.StartTime();
+            theArray.QSort();
+            sortTime.StopTime();
+            Console.WriteLine();
+            Console.WriteLine($"Time for Q sort :{sortTime.Result().TotalMilliseconds}");
+            theArray.Clear();
             #endregion
             Console.ReadLine();
         }
@@ -210,23 +224,93 @@ namespace Chapter3
         }
 
         #endregion
+        #region 快速排序法
+        public void QSort()
+        {
+            RecQSort(0, numElements - 1);
+        }
+        public void RecQSort(int first ,int last)
+        {
+            if (first >= last)
+                return;
+            else
+            {
+                int part = Partition(first, last);
+                RecQSort(first, part - 1);
+                RecQSort(part + 1, last);
+            }
+        }
+        public int Partition(int first,int last)
+        {
+            int pivotVal = arr[first];
+            int theFisrt = first;
+            bool okSide;
+            first++;
+            do
+            {
+                okSide = true;
+                while (okSide)
+                {
+                    if (arr[first] > pivotVal)
+                        okSide = false;
+                    else
+                    {
+                        first++;
+                        okSide = (first <= last);
+                    }
+                }
+                okSide = true;
+                while (okSide)
+                {
+                    if (arr[last] <= pivotVal)
+                        okSide = false;
+                    else
+                    {
+                        last--;
+                        okSide = (first <= last);
+                    }
+                }
+                if (first < last)
+                {
+                    Swap(first, last);
+                    //this.DisPlayElements();
+                    first++;
+                    last--;
+                }
+            } while (first <= last);
+            Swap(theFisrt, last);
+            //this.DisPlayElements();
+            return last;
+            
+        }
+        public void Swap(int item1,int item2)
+        {
+            int temp = arr[item1];
+            arr[item1] = arr[item2];
+            arr[item2] = temp;
+        }
+        #endregion
     }
     #region 时间测试类
     public class Timing
     {
         TimeSpan duration;
+        TimeSpan start;
         public Timing()
         {
+            start = new TimeSpan(0);
             duration = new TimeSpan(0);
         }
         public void StopTime()
         {
-            duration = Process.GetCurrentProcess().TotalProcessorTime;
+            //duration = Process.GetCurrentProcess().TotalProcessorTime;
+            duration = Process.GetCurrentProcess().Threads[0].UserProcessorTime.Subtract(start);
         }
         public void StartTime()
         {
             GC.Collect();
             GC.WaitForPendingFinalizers();
+            start = Process.GetCurrentProcess().Threads[0].UserProcessorTime;
         }
         public TimeSpan Result()
         {
