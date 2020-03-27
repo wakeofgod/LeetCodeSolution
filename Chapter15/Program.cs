@@ -302,4 +302,152 @@ namespace Chapter15
         }
     }
     #endregion
+
+    #region 跳跃表
+    //由很多层构成，每一层都是一个有序的链表
+    //最底层level 1链表包含所有元素
+    //如果一个元素出现在level i的链表中，则它一定会出现在level i以下的链表中
+    //每个节点包含两个指针，一个指向同一链表中的下一个元素，一个指向下一层的元素
+    public class SkipNode
+    {
+        public int key;
+        public Object value;
+        public SkipNode[] link;
+        public SkipNode(int level,int key,Object value)
+        {
+            this.key = key;
+            this.value = value;
+            link = new SkipNode[level];
+        }
+    }
+    public class SkipList
+    {
+        public int maxLevel;
+        public int level;
+        public SkipNode header;
+        public float probability;
+        public const int NIL = Int32.MaxValue;
+        public const float PROB = 0.5F;
+
+        private void SkipList2(float probable,int maxLevel)
+        {
+            this.probability = probable;
+            this.maxLevel = maxLevel;
+            level = 0;
+            header = new SkipNode(maxLevel, 0, null);
+            SkipNode nilElement = new SkipNode(maxLevel, NIL, null);
+            for (int i = 0; i < maxLevel; i++)
+            {
+                header.link[i] = nilElement;
+            }
+        }
+        //传入节点总数量，调用私有方法，计算链表层数最大数量
+        public SkipList(long maxNodes)
+        {
+            this.SkipList2(PROB,(int)(Math.Ceiling(Math.Log(maxNodes)/Math.Log(1/PROB)-1)));
+        }
+
+        public void Insert(int key,Object value)
+        {
+            SkipNode[] update = new SkipNode[maxLevel];
+            SkipNode cursor = header;
+            for (int i = level; i >=0; i--)
+            {
+                while (cursor.link[i].key < key)
+                {
+                    cursor = cursor.link[i];
+                }
+                update[i] = cursor;
+            }
+            cursor = cursor.link[0];
+            if (cursor.key == key)
+            {
+                cursor.value = value;
+            }
+            else
+            {
+                int newLevel = GenRandomLevel();
+                if (newLevel > level)
+                {
+                    for (int i = level; i < newLevel; i++)
+                    {
+                        update[i] = header;
+                    }
+                    level = newLevel;
+                }
+                cursor = new SkipNode(newLevel, key, value);
+                for (int i = 0; i < newLevel; i++)
+                {
+                    cursor.link[i] = update[i].link[i];
+                    update[i].link[i] = cursor;
+                }
+            }
+        }
+
+        private int GenRandomLevel()
+        {
+            int newLevel = 0;
+            Random r = new Random();
+            int ran = r.Next(0);
+            while(newLevel <maxLevel && ran < probability)
+            {
+                newLevel++;
+            }
+            return newLevel;
+        }
+
+        public void Delete(int key)
+        {
+            SkipNode[] update = new SkipNode[maxLevel + 1];
+            SkipNode cursor = header;
+            for (int i = level; i >=0; i--)
+            {
+                while (cursor.link[i].key < key)
+                {
+                    cursor = cursor.link[i];
+                }
+                update[i] = cursor;
+            }
+            cursor = cursor.link[0];
+            if (cursor.key == key)
+            {
+                for (int i = 0; i < level; i++)
+                {
+                    if (update[i].link[i] == cursor)
+                    {
+                        update[i].link[i] = cursor.link[i];
+                    }
+                    while(level>0 && header.link[level].key == NIL)
+                    {
+                        level--;
+                    }
+                }
+            }
+        }
+
+        public Object Search(int key)
+        {
+            SkipNode cursor = header;
+            for (int i = level; i >=0; i--)
+            {
+                SkipNode nextElement = cursor.link[i];
+                while (nextElement.key < key)
+                {
+                    cursor = nextElement;
+                    nextElement = cursor.link[i];
+                }
+            }
+            cursor = cursor.link[0];
+            if (cursor.key == key)
+            {
+                return cursor.value;
+            }
+            else
+            {
+                return " Object not found";
+            }
+        }
+    }
+
+    #endregion
 }
