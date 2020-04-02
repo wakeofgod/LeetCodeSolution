@@ -29,6 +29,36 @@ namespace Chapter16
             #endregion
 
             #region 深度优先搜索
+            //Graph aGraph = new Graph(13);
+            //aGraph.AddVertex("A");
+            //aGraph.AddVertex("B");
+            //aGraph.AddVertex("C");
+            //aGraph.AddVertex("D");
+            //aGraph.AddVertex("E");
+            //aGraph.AddVertex("F");
+            //aGraph.AddVertex("G");
+            //aGraph.AddVertex("H");
+            //aGraph.AddVertex("I");
+            //aGraph.AddVertex("J");
+            //aGraph.AddVertex("K");
+            //aGraph.AddVertex("L");
+            //aGraph.AddVertex("M");
+            //aGraph.AddEdge(0, 1);
+            //aGraph.AddEdge(1, 2);
+            //aGraph.AddEdge(2, 3);
+            //aGraph.AddEdge(0, 4);
+            //aGraph.AddEdge(4, 5);
+            //aGraph.AddEdge(5, 6);
+            //aGraph.AddEdge(0, 7);
+            //aGraph.AddEdge(7, 8);
+            //aGraph.AddEdge(8, 9);
+            //aGraph.AddEdge(0, 10);
+            //aGraph.AddEdge(10, 11);
+            //aGraph.AddEdge(11, 12);
+            //aGraph.DepthFirstSearch();
+            #endregion
+
+            #region 广度优先搜索
             Graph aGraph = new Graph(13);
             aGraph.AddVertex("A");
             aGraph.AddVertex("B");
@@ -55,7 +85,8 @@ namespace Chapter16
             aGraph.AddEdge(0, 10);
             aGraph.AddEdge(10, 11);
             aGraph.AddEdge(11, 12);
-            aGraph.DepthFirstSearch();
+            Console.WriteLine();
+            aGraph.BreadthFirstSearch();
             #endregion
             Console.ReadLine();
         }
@@ -195,6 +226,7 @@ namespace Chapter16
         #endregion
 
         #region 深度优先搜索
+        //查找指定顶点后 未访问的顶点
         private int GetAdjUnvisitedVertex(int v)
         {
             for (int j = 0; j < NUM_VERTICES; j++)
@@ -232,6 +264,40 @@ namespace Chapter16
                 vertices[j].wasVisted = false;
             }
         }
+        #endregion
+
+        #region 广度优先搜索
+        //1.找到一个与当前顶点相邻的未访问过的顶点，把它标记为已访问的，
+        //然后把它添加到队列中
+        //2.如果找不到一个未访问过的相邻顶点，那么从队列中移除掉一个顶点，
+        //把它当作当前顶点，然后重新开始
+        //3.如果队列为空而无法执行第二步，算法结束
+        public void BreadthFirstSearch()
+        {
+            Queue<int> gQueue = new Queue<int>();
+            vertices[0].wasVisted = true;
+            ShowVertex(0);
+            gQueue.Enqueue(0);
+            int vert1, vert2;
+            while (gQueue.Count > 0)
+            {
+                vert1 = gQueue.Dequeue();
+                vert2 = GetAdjUnvisitedVertex(vert1);
+                while (vert2 != -1)
+                {
+                    vertices[vert2].wasVisted = true;
+                    ShowVertex(vert2);
+                    gQueue.Enqueue(vert2);
+                    vert2 = GetAdjUnvisitedVertex(vert1);
+                }
+            }
+            for (int i = 0; i < NUM_VERTICES; i++)               
+            {
+                vertices[i].wasVisted = false;
+            }
+        }
+
+
         #endregion
     }
 }
