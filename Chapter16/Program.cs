@@ -59,7 +59,38 @@ namespace Chapter16
             #endregion
 
             #region 广度优先搜索
-            Graph aGraph = new Graph(13);
+            //Graph aGraph = new Graph(13);
+            //aGraph.AddVertex("A");
+            //aGraph.AddVertex("B");
+            //aGraph.AddVertex("C");
+            //aGraph.AddVertex("D");
+            //aGraph.AddVertex("E");
+            //aGraph.AddVertex("F");
+            //aGraph.AddVertex("G");
+            //aGraph.AddVertex("H");
+            //aGraph.AddVertex("I");
+            //aGraph.AddVertex("J");
+            //aGraph.AddVertex("K");
+            //aGraph.AddVertex("L");
+            //aGraph.AddVertex("M");
+            //aGraph.AddEdge(0, 1);
+            //aGraph.AddEdge(1, 2);
+            //aGraph.AddEdge(2, 3);
+            //aGraph.AddEdge(0, 4);
+            //aGraph.AddEdge(4, 5);
+            //aGraph.AddEdge(5, 6);
+            //aGraph.AddEdge(0, 7);
+            //aGraph.AddEdge(7, 8);
+            //aGraph.AddEdge(8, 9);
+            //aGraph.AddEdge(0, 10);
+            //aGraph.AddEdge(10, 11);
+            //aGraph.AddEdge(11, 12);
+            //Console.WriteLine();
+            //aGraph.BreadthFirstSearch();
+            #endregion
+
+            #region 最小生成树
+            Graph aGraph = new Graph(7);
             aGraph.AddVertex("A");
             aGraph.AddVertex("B");
             aGraph.AddVertex("C");
@@ -67,26 +98,22 @@ namespace Chapter16
             aGraph.AddVertex("E");
             aGraph.AddVertex("F");
             aGraph.AddVertex("G");
-            aGraph.AddVertex("H");
-            aGraph.AddVertex("I");
-            aGraph.AddVertex("J");
-            aGraph.AddVertex("K");
-            aGraph.AddVertex("L");
-            aGraph.AddVertex("M");
             aGraph.AddEdge(0, 1);
+            aGraph.AddEdge(0, 2);
+            aGraph.AddEdge(0, 3);
             aGraph.AddEdge(1, 2);
+            aGraph.AddEdge(1, 3);
+            aGraph.AddEdge(1, 4);
             aGraph.AddEdge(2, 3);
-            aGraph.AddEdge(0, 4);
+            aGraph.AddEdge(2, 5);
+            aGraph.AddEdge(3, 5);
+            aGraph.AddEdge(3, 4);
+            aGraph.AddEdge(3, 6);
             aGraph.AddEdge(4, 5);
+            aGraph.AddEdge(4, 6);
             aGraph.AddEdge(5, 6);
-            aGraph.AddEdge(0, 7);
-            aGraph.AddEdge(7, 8);
-            aGraph.AddEdge(8, 9);
-            aGraph.AddEdge(0, 10);
-            aGraph.AddEdge(10, 11);
-            aGraph.AddEdge(11, 12);
             Console.WriteLine();
-            aGraph.BreadthFirstSearch();
+            aGraph.Mst();
             #endregion
             Console.ReadLine();
         }
@@ -296,7 +323,41 @@ namespace Chapter16
                 vertices[i].wasVisted = false;
             }
         }
+        #endregion
 
+        #region 最小生成树
+        //覆盖每个顶点(范围)所必须的最少数量的构造边
+        //一张图可能有多个最小生成树
+        //创建的最小生成树完全依赖于初始顶点
+
+        public void Mst()
+        {
+            Stack<int> gStack = new Stack<int>();
+            vertices[0].wasVisted = true;
+            gStack.Push(0);
+            int currVertex, ver;
+            while (gStack.Count() > 0)
+            {
+                currVertex = gStack.Peek();
+                ver = GetAdjUnvisitedVertex(currVertex);
+                if (ver == -1)
+                {
+                    gStack.Pop();
+                }
+                else
+                {
+                    vertices[ver].wasVisted = true;
+                    gStack.Push(ver);
+                    ShowVertex(currVertex);
+                    ShowVertex(ver);
+                    Console.WriteLine();
+                }
+            }
+            for (int i = 0; i < NUM_VERTICES; i++)
+            {
+                vertices[i].wasVisted = false;
+            }
+        }
 
         #endregion
     }
