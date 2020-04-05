@@ -258,6 +258,113 @@ namespace Chapter17
         #endregion
     }
 
+    #region 哈夫曼编码
+    //哈夫曼二叉树是从底部开始构建，而不是从头部开始
+    public class Node
+    {
+        public HuffmanTree data;
+        public Node link;
+       
+        public Node(HuffmanTree newData)
+        {
+            data = newData;
+        }
+    }
+
+    public class TreeList
+    {
+        private int count = 0;
+        private Node first = null;
+        private static string[] signTable = null;
+        private static string[] keyTable = null;
+
+        public TreeList(string input)
+        {
+            List<char> list = new List<char>();
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (!list.Contains(input[i]))
+                {
+                    list.Add(input[i]);
+                }
+            }
+            signTable = new string[list.Count];
+            keyTable = new string[list.Count];
+        }
+
+        public string [] GetSignTable()
+        {
+            return signTable;
+        }
+
+        public string [] GetKeyTable()
+        {
+            return keyTable;
+        }
+
+        public void AddLetter(string letter)
+        {
+            HuffmanTree hTemp = new HuffmanTree(letter);
+            Node eTemp = new Node(hTemp);
+            if (first == null)
+            {
+                first = eTemp;
+            }
+            else
+            {
+                eTemp.link = first;
+                first = eTemp;
+            }
+            count++;
+        }
+
+        public void SortTree()
+        {
+            if(first!=null && first.link != null)
+            {
+                Node tmp1;
+                Node tmp2;
+                for ( tmp1 = first; tmp1 !=null ; tmp1=tmp1.link)
+                {
+                    for ( tmp2 = tmp1.link; tmp2 !=null; tmp2=tmp2.link)
+                    {
+                        
+                    }
+                }
+            }
+        }
+    }
+
+    public class HuffmanTree
+    {
+        private HuffmanTree leftChild;
+        private HuffmanTree rightChild;
+        private string letter;
+        private int freq;
+
+        public HuffmanTree(string letter)
+        {
+            this.letter = letter;
+            this.freq = 1;
+        }
+
+        public void SetLeftChild(HuffmanTree newChild)
+        {
+            leftChild = newChild;
+        }
+
+        public void SetRightChild(HuffmanTree newChild)
+        {
+            rightChild = newChild;
+        }
+
+        public void SetLetter(string newLetter)
+        {
+            letter = newLetter;
+        }
+    }
+    #endregion
+
     #region 时间测试类
     public class Timing
     {
