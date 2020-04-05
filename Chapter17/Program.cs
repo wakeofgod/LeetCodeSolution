@@ -55,34 +55,46 @@ namespace Chapter17
             #endregion
 
             #region 背包问题
-            int capacity = 16;                         //背包最大容量
-            int[] size = new int[] { 3, 4, 7, 8, 9 };  //宝物大小数组
-            int[] values = new int[] { 4, 5, 10, 11, 13 };//宝物价值数组
-            int[] total = new int[capacity + 1];       //用来储存最高的总价值
-            int[] best = new int[capacity + 1];        //用来初春最高价值的宝物
-            int n = values.Length;
-            for (int j = 0; j < n; j++)
-            {
-                for (int i = 0; i <= capacity; i++)
-                {
-                    if (i >= size[j])
-                    {
-                        if (total[i] < total[i - size[j]] + values[j])
-                        {
-                            total[i] = total[i - size[j]] + values[j];
-                            best[i] = j;
-                        }
-                    }
-                }
-            }
-            Console.WriteLine($"The maximum value is:{total[capacity]}");
-            //Console.WriteLine($"The item that generate this value are:");
-            //int totcap = 0;
-            //while (totcap <= capacity)
+            //int capacity = 16;                         //背包最大容量
+            //int[] size = new int[] { 3, 4, 7, 8, 9 };  //宝物大小数组
+            //int[] values = new int[] { 4, 5, 10, 11, 13 };//宝物价值数组
+            //int[] total = new int[capacity + 1];       //用来储存最高的总价值
+            //int[] best = new int[capacity + 1];        //用来初春最高价值的宝物
+            //int n = values.Length;
+            //for (int j = 0; j < n; j++)
             //{
-            //    Console.WriteLine($"Item with best value:{size[best[capacity-totcap]]}");
-            //    totcap += size[best[i]];
+            //    for (int i = 0; i <= capacity; i++)
+            //    {
+            //        if (i >= size[j])
+            //        {
+            //            if (total[i] < total[i - size[j]] + values[j])
+            //            {
+            //                total[i] = total[i - size[j]] + values[j];
+            //                best[i] = j;
+            //            }
+            //        }
+            //    }
             //}
+            //Console.WriteLine($"The maximum value is:{total[capacity]}");
+            ////Console.WriteLine($"The item that generate this value are:");
+            ////int totcap = 0;
+            ////while (totcap <= capacity)
+            ////{
+            ////    Console.WriteLine($"Item with best value:{size[best[capacity-totcap]]}");
+            ////    totcap += size[best[i]];
+            ////}
+            #endregion
+
+            #region 找零钱问题
+            //假设只有四种硬币：25美分，10美分，5美分，1美分
+            //要找的零钱总数不超过一美元
+            double origAmount = 0.63;
+            double toChange = origAmount;
+            double remainAmount = 0.0;
+            int[] coins = new int[4];
+            MakeChanges(origAmount, remainAmount, coins);
+            Console.WriteLine($"The best way to change {toChange} cent is :");
+            ShowChange(coins);
             #endregion
             Console.ReadLine();
         }
@@ -191,6 +203,58 @@ namespace Chapter17
             }
         }
 
+        #endregion
+
+        #region 找零钱问题
+        public static void MakeChanges(double origAmount,double remainAmount,int[] coins)
+        {
+            if((origAmount % 0.25) < origAmount)
+            {
+                //数组的最后一位是使用25美分硬币的数量，优先使用最高面值的
+                coins[3] = (int)(origAmount / 0.25);
+                remainAmount = origAmount % 0.25;
+                origAmount = remainAmount;
+            }
+            if( (origAmount%0.1) < origAmount)
+            {
+                //然后使用次高面值的10美分硬币,数量存在数组的倒数第二位
+                coins[2] = (int)(origAmount / 0.1);
+                remainAmount = origAmount % 0.1;
+                origAmount = remainAmount;
+            }
+            if ((origAmount % 0.05) < origAmount)
+            {
+                coins[1] = (int)(origAmount / 0.05);
+                remainAmount = origAmount % 0.05;
+                origAmount = remainAmount;
+            }
+            if ((origAmount % 0.01) < origAmount)
+            {
+                coins[0] = (int)(origAmount / 0.01);
+                remainAmount = origAmount % 0.01;
+                origAmount = remainAmount;
+            }
+        }
+
+        public static void ShowChange(int[] arr)
+        {
+            if (arr[3] > 0)
+            {
+                Console.WriteLine($"Number of quarters: {arr[3]}");
+            }
+            if (arr[2] > 0)
+            {
+                Console.WriteLine($"Number of dimes: {arr[2]}");
+            }
+            if (arr[1] > 0)
+            {
+                Console.WriteLine($"Number of nickels: {arr[1]}");
+            }
+            if (arr[0] > 0)
+            {
+                Console.WriteLine($"Number of pennies: {arr[0]}");
+            }
+        }
         #endregion
     }
 
