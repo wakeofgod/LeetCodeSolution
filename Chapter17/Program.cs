@@ -32,26 +32,57 @@ namespace Chapter17
             #endregion
 
             #region 寻找最长公共子串
-            string word1 = "mavens";
-            string word2 = "hpavoc";
-            string[] warr1 = new string[word1.Length];
-            string[] warr2 = new string[word2.Length];
-            string substr = "";
-            int[,] larray = new int[word1.Length, word2.Length];
-            LCSubstring(word1, word2, warr1, warr2, larray);
-            Console.WriteLine();
-            Dispaly(larray);
-            substr = ShowString(larray, warr1);
-            Console.WriteLine();
-            Console.WriteLine($"The strings are:{word1} {word2}");
-            if (substr.Length > 0)
+            //string word1 = "mavens";
+            //string word2 = "hpavoc";
+            //string[] warr1 = new string[word1.Length];
+            //string[] warr2 = new string[word2.Length];
+            //string substr = "";
+            //int[,] larray = new int[word1.Length, word2.Length];
+            //LCSubstring(word1, word2, warr1, warr2, larray);
+            //Console.WriteLine();
+            //Dispaly(larray);
+            //substr = ShowString(larray, warr1);
+            //Console.WriteLine();
+            //Console.WriteLine($"The strings are:{word1} {word2}");
+            //if (substr.Length > 0)
+            //{
+            //    Console.WriteLine($"The longest common substring is :{substr}");
+            //}
+            //else
+            //{
+            //    Console.WriteLine($"There is no common substring");
+            //}
+            #endregion
+
+            #region 背包问题
+            int capacity = 16;                         //背包最大容量
+            int[] size = new int[] { 3, 4, 7, 8, 9 };  //宝物大小数组
+            int[] values = new int[] { 4, 5, 10, 11, 13 };//宝物价值数组
+            int[] total = new int[capacity + 1];       //用来储存最高的总价值
+            int[] best = new int[capacity + 1];        //用来初春最高价值的宝物
+            int n = values.Length;
+            for (int j = 0; j < n; j++)
             {
-                Console.WriteLine($"The longest common substring is :{substr}");
+                for (int i = 0; i <= capacity; i++)
+                {
+                    if (i >= size[j])
+                    {
+                        if (total[i] < total[i - size[j]] + values[j])
+                        {
+                            total[i] = total[i - size[j]] + values[j];
+                            best[i] = j;
+                        }
+                    }
+                }
             }
-            else
-            {
-                Console.WriteLine($"There is no common substring");
-            }
+            Console.WriteLine($"The maximum value is:{total[capacity]}");
+            //Console.WriteLine($"The item that generate this value are:");
+            //int totcap = 0;
+            //while (totcap <= capacity)
+            //{
+            //    Console.WriteLine($"Item with best value:{size[best[capacity-totcap]]}");
+            //    totcap += size[best[i]];
+            //}
             #endregion
             Console.ReadLine();
         }
