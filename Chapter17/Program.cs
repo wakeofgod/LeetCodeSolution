@@ -86,15 +86,42 @@ namespace Chapter17
             #endregion
 
             #region 找零钱问题
-            //假设只有四种硬币：25美分，10美分，5美分，1美分
-            //要找的零钱总数不超过一美元
-            double origAmount = 0.63;
-            double toChange = origAmount;
-            double remainAmount = 0.0;
-            int[] coins = new int[4];
-            MakeChanges(origAmount, remainAmount, coins);
-            Console.WriteLine($"The best way to change {toChange} cent is :");
-            ShowChange(coins);
+            ////假设只有四种硬币：25美分，10美分，5美分，1美分
+            ////要找的零钱总数不超过一美元
+            //double origAmount = 0.63;
+            //double toChange = origAmount;
+            //double remainAmount = 0.0;
+            //int[] coins = new int[4];
+            //MakeChanges(origAmount, remainAmount, coins);
+            //Console.WriteLine($"The best way to change {toChange} cent is :");
+            //ShowChange(coins);
+            #endregion
+
+            #region 哈夫曼编码
+            string input;
+            Console.WriteLine("Enter a string to encode:");
+            input = Console.ReadLine();
+            TreeList treeList = new TreeList(input);
+            for (int i = 0; i < input.Length; i++)
+            {
+                treeList.AddSign(input[i].ToString());
+            }
+            treeList.SortTree();
+            while (treeList.Length() > 1)
+            {
+                treeList.MergeTree();
+            }
+            TreeList.MakeKey(treeList.RemoveTree(), "");
+            string newStr = TreeList.translate(input);
+            string[] signTable = treeList.GetSignTable();
+            string[] keyTable = treeList.GetKeyTable();
+            for (int i = 0; i < signTable.Length; i++)
+            {
+                Console.WriteLine($"{signTable[i]}:{keyTable[i]}");
+            }
+            Console.WriteLine($"The original string is {input.Length*16} bits long.");
+            Console.WriteLine($"The new string is {newStr.Length} bits long.");
+            Console.WriteLine($"The code string looks like this {newStr}");
             #endregion
             Console.ReadLine();
         }
@@ -328,9 +355,124 @@ namespace Chapter17
                 {
                     for ( tmp2 = tmp1.link; tmp2 !=null; tmp2=tmp2.link)
                     {
-                        
+                        if (tmp1.data.GetFreq() > tmp2.data.GetFreq())
+                        {
+                            HuffmanTree tmpHT = tmp1.data;
+                            tmp1.data = tmp2.data;
+                            tmp2.data = tmp1.data;
+                        }
                     }
                 }
+            }
+        }
+
+        public void MergeTree()
+        {
+            if (first != null)
+            {
+                if (first.link != null)
+                {
+                    HuffmanTree aTemp = RemoveTree();
+                    HuffmanTree bTemp = RemoveTree();
+                    HuffmanTree sumTemp = new HuffmanTree("x");
+                    sumTemp.SetLeftChild(aTemp);
+                    sumTemp.SetRightChild(bTemp);
+                    sumTemp.SetFreq(aTemp.GetFreq() + bTemp.GetFreq());
+                    InsertTree(sumTemp);
+                }
+            }
+        }
+
+        public HuffmanTree RemoveTree()
+        {
+            if (first != null)
+            {
+                HuffmanTree hTemp;
+                hTemp = first.data;
+                first = first.link;
+                count--;
+                return hTemp;
+            }
+            return null;
+        }
+
+        public void InsertTree(HuffmanTree hTemp)
+        {
+            Node eTemp = new Node(hTemp);
+            if (first == null)
+            {
+                first = eTemp;
+            }
+            else
+            {
+                Node p = first;
+                while (p.link != null)
+                {
+                    if((p.data.GetFreq()<=hTemp.GetFreq()) && (p.link.data.GetFreq() >= hTemp.GetFreq()))
+                    {
+                        break;
+                    }
+                    p = p.link;
+                }
+                eTemp.link = p.link;
+                p.link = eTemp;
+            }
+        }
+
+        public int Length()
+        {
+            return count;
+        }
+
+        public void AddSign(string str)
+        {
+            if (first == null)
+            {
+                AddLetter(str);
+                return;
+            }
+            Node tmp = first;
+            while (tmp != null)
+            {
+                if (tmp.data.GetSign() == str)
+                {
+                    tmp.data.IncFreq();
+                    return;
+                }
+                tmp = tmp.link;
+            }
+            AddLetter(str);
+        }
+
+        public static string translate(string original)
+        {
+            string newStr = "";
+            for (int i = 0; i < original.Length; i++)
+            {
+                for (int j = 0; j < signTable.Length; j++)
+                {
+                    if (original[i].ToString() == signTable[j])
+                    {
+                        newStr += keyTable[j];
+                    }
+                }
+            }
+            return newStr;
+        }
+
+        static int pos = 0;
+        public static void MakeKey(HuffmanTree tree,string code)
+        {
+            if (tree.GetLeftChild() == null)
+            {
+                signTable[pos] = tree.GetSign();
+                keyTable[pos] = code;
+                pos++;
+            }
+            else
+            {
+                MakeKey(tree.GetLeftChild(), code + "0");
+                MakeKey(tree.GetRightChild(), code + "1");
             }
         }
     }
@@ -361,6 +503,36 @@ namespace Chapter17
         public void SetLetter(string newLetter)
         {
             letter = newLetter;
+        }
+
+        public void IncFreq()
+        {
+            freq++;
+        }
+
+        public void SetFreq(int newFreq)
+        {
+            freq = newFreq;
+        }
+
+        public HuffmanTree GetLeftChild()
+        {
+            return leftChild;
+        }
+
+        public HuffmanTree GetRightChild()
+        {
+            return rightChild;
+        }
+
+        public int GetFreq()
+        {
+            return freq;
+        }
+
+        public string GetSign()
+        {
+            return letter;
         }
     }
     #endregion
