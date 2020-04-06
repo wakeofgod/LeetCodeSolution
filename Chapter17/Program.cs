@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Collections;
 
 namespace Chapter17
 {
@@ -54,10 +55,10 @@ namespace Chapter17
             //}
 
             //暴力穷举法计算
-            string word1 = "mavens";
-            string word2 = "hpavoc";
-            string longest= LongestStr(word1, word2);
-            Console.WriteLine(longest);
+            //string word1 = "mavens";
+            //string word2 = "hpavoc";
+            //string longest= LongestStr(word1, word2);
+            //Console.WriteLine(longest);
             #endregion
 
             #region 背包问题
@@ -128,6 +129,22 @@ namespace Chapter17
             //Console.WriteLine($"The original string is {input.Length*16} bits long.");
             //Console.WriteLine($"The new string is {newStr.Length} bits long.");
             //Console.WriteLine($"The code string looks like this {newStr}");
+            #endregion
+
+            #region 贪心算法解决背包问题
+            Carpet c1 = new Carpet("Frieze", 1.75f, 12);
+            Carpet c2 = new Carpet("Saxony", 1.82f, 9);
+            Carpet c3 = new Carpet("Shag", 1.5f, 13);
+            Carpet c4 = new Carpet("Loop", 1.77f, 10);
+            ArrayList rugs = new ArrayList();
+            rugs.Add(c1);
+            rugs.Add(c2);
+            rugs.Add(c3);
+            rugs.Add(c4);
+            rugs.Sort();
+            Knapsack k = new Knapsack(25);
+            k.FillSack(rugs);
+            Console.WriteLine(k.GetItems());
             #endregion
             Console.ReadLine();
         }
@@ -612,11 +629,47 @@ namespace Chapter17
     public class Knapsack
     {
         private float quantity;
-        //SortedList items = new SortedList();
+        SortedList items = new SortedList();
         string itemList;
         public Knapsack(float max)
         {
             quantity = max;
+        }
+
+        public void FillSack(ArrayList objects)
+        {
+            int pos = objects.Count - 1;
+            int totalUnits = 0;
+            float totalVal = 0.0F;
+            int tempTot = 0;
+            while (totalUnits < quantity)
+            {
+                tempTot += ((Carpet)objects[pos]).GetUnit();
+                if (tempTot <= quantity)
+                {
+                    totalUnits+= ((Carpet)objects[pos]).GetUnit();
+                    totalVal+= ((Carpet)objects[pos]).GetVal();
+                    items.Add(((Carpet)objects[pos]).GetItem(), ((Carpet)objects[pos]).GetUnit());
+                }
+                else
+                {
+                    float tempUnit = quantity - totalUnits;
+                    float tempVal = ((Carpet)objects[pos]).ItemVal() * tempUnit;
+                    totalVal += tempVal;
+                    totalUnits += (int)tempUnit;
+                    items.Add(((Carpet)objects[pos]).GetItem(), tempUnit);
+                }
+                pos--;
+            }
+        }
+
+        public string GetItems()
+        {
+            foreach (object k in items.GetKeyList())
+            {
+                itemList += k.ToString() + ": " + items[k].ToString()+" ";
+            }
+            return itemList;
         }
     }
     #endregion
