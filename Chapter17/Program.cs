@@ -52,6 +52,12 @@ namespace Chapter17
             //{
             //    Console.WriteLine($"There is no common substring");
             //}
+
+            //暴力穷举法计算
+            string word1 = "mavens";
+            string word2 = "hpavoc";
+            string longest= LongestStr(word1, word2);
+            Console.WriteLine(longest);
             #endregion
 
             #region 背包问题
@@ -98,30 +104,30 @@ namespace Chapter17
             #endregion
 
             #region 哈夫曼编码
-            string input;
-            Console.WriteLine("Enter a string to encode:");
-            input = Console.ReadLine();
-            TreeList treeList = new TreeList(input);
-            for (int i = 0; i < input.Length; i++)
-            {
-                treeList.AddSign(input[i].ToString());
-            }
-            treeList.SortTree();
-            while (treeList.Length() > 1)
-            {
-                treeList.MergeTree();
-            }
-            TreeList.MakeKey(treeList.RemoveTree(), "");
-            string newStr = TreeList.translate(input);
-            string[] signTable = treeList.GetSignTable();
-            string[] keyTable = treeList.GetKeyTable();
-            for (int i = 0; i < signTable.Length; i++)
-            {
-                Console.WriteLine($"{signTable[i]}:{keyTable[i]}");
-            }
-            Console.WriteLine($"The original string is {input.Length*16} bits long.");
-            Console.WriteLine($"The new string is {newStr.Length} bits long.");
-            Console.WriteLine($"The code string looks like this {newStr}");
+            //string input;
+            //Console.WriteLine("Enter a string to encode:");
+            //input = Console.ReadLine();
+            //TreeList treeList = new TreeList(input);
+            //for (int i = 0; i < input.Length; i++)
+            //{
+            //    treeList.AddSign(input[i].ToString());
+            //}
+            //treeList.SortTree();
+            //while (treeList.Length() > 1)
+            //{
+            //    treeList.MergeTree();
+            //}
+            //TreeList.MakeKey(treeList.RemoveTree(), "");
+            //string newStr = TreeList.translate(input);
+            //string[] signTable = treeList.GetSignTable();
+            //string[] keyTable = treeList.GetKeyTable();
+            //for (int i = 0; i < signTable.Length; i++)
+            //{
+            //    Console.WriteLine($"{signTable[i]}:{keyTable[i]}");
+            //}
+            //Console.WriteLine($"The original string is {input.Length*16} bits long.");
+            //Console.WriteLine($"The new string is {newStr.Length} bits long.");
+            //Console.WriteLine($"The code string looks like this {newStr}");
             #endregion
             Console.ReadLine();
         }
@@ -228,6 +234,34 @@ namespace Chapter17
                 }
                 Console.WriteLine();
             }
+        }
+
+        public static string LongestStr(string str1,string str2)
+        {
+            int len1 = str1.Length;
+            int len2 = str2.Length;
+            int max = 0, num = 0, start = 0;
+            for (int i = 0; i < len1; i++)
+            {
+                for (int j = 0; j < len2; j++)
+                {
+                    int start1 = i;
+                    int start2 = j;
+                    while((start1<len1-1) && (start2 <= len2 - 1) && str1[start1++] == str2[start2++])
+                    {
+                        num++;
+                    }
+                    if (num > max)
+                    {
+                        max = num;
+                        start = i;
+                    }
+                    num = 0;
+                }
+            }
+            string str;
+            str = str1.Substring(start, max);
+            return str;
         }
 
         #endregion
@@ -533,6 +567,56 @@ namespace Chapter17
         public string GetSign()
         {
             return letter;
+        }
+    }
+    #endregion
+
+    #region 贪心算法解决背包问题
+    public class Carpet : IComparable
+    {
+        private string item;
+        private float val;
+        private int unit;
+        public Carpet(string i,float v,int u)
+        {
+            item = i;
+            val = v;
+            unit = u;
+        }
+
+        public int CompareTo(Object c)
+        {
+            return this.val.CompareTo(((Carpet)c).val);
+        }
+
+        public int GetUnit()
+        {
+            return unit;
+        }
+
+        public string GetItem()
+        {
+            return item;
+        }
+
+        public float GetVal()
+        {
+            return val * unit;
+        }
+        public float ItemVal()
+        {
+            return val;
+        }
+    }
+
+    public class Knapsack
+    {
+        private float quantity;
+        //SortedList items = new SortedList();
+        string itemList;
+        public Knapsack(float max)
+        {
+            quantity = max;
         }
     }
     #endregion
